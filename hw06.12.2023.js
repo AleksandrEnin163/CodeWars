@@ -37,3 +37,36 @@ function positiveSum(arr) {
     const arrPositiveNumbers = arr.filter(num => num > 0)
     return arrPositiveNumbers.reduce((acc, curr) => acc + curr, 0)
   }
+
+  // 103
+  function generateShape(integer){
+    return `${'+'.repeat(integer)}\n`.repeat(integer - 1) + '+'.repeat(integer)
+  }
+
+  // 104
+  function getCount(str) {
+    const lettersArray = str.split('')
+    const vowelsSet = new Set(['a','e','i','o','u', ' '])
+    return lettersArray.filter(letter =>  !vowelsSet.has(letter)).length
+  }
+
+  // 106
+  function min(arr, toReturn) {
+    const minNumber = Math.min(...arr)
+    return toReturn === 'value' ? minNumber : arr.indexOf(minNumber)
+  }
+
+  // 108
+  function capitalsIndex(word) {
+    const arrayLetters = word.split('')
+    const arrayIndexOfCapitals = []
+    for(const letter of arrayLetters){
+      if(letter === letter.toUpperCase()){
+        arrayIndexOfCapitals.push(arrayLetters.indexOf(letter))
+      }
+    }
+    return arrayIndexOfCapitals
+  };
+
+  let num = 12234234
+  console.log(num.toString().split(''))
