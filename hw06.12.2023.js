@@ -68,5 +68,49 @@ function positiveSum(arr) {
     return arrayIndexOfCapitals
   };
 
-  let num = 12234234
-  console.log(num.toString().split(''))
+  // 109
+  function insertDash(num) {
+    const arrayNumbers = num.toString().split('')
+    return arrayNumbers.map((num, i, arr) => num = i !== 0 && num % 2 !== 0 && arr[i-1] % 2 !== 0 ? -num : num).join('')
+  }
+
+  // 111
+  function strToCharCodeArray(str){
+    const charCodeArray = []
+    for(let i = 0; i < str.length; i++){
+      charCodeArray.push(str.charCodeAt(i))
+    }
+    return charCodeArray
+    }
+  
+  function bingo(ticket, win){
+    let miniWins = 0
+    for(const subArray of ticket){
+      if(strToCharCodeArray(subArray[0]).includes(subArray[1])){
+        miniWins++
+      }
+    }
+    if(miniWins >= win){
+      return 'Winner!'
+    }
+    return 'Loser!'
+  }
+
+  // 112
+  function rowWeights(array){
+    if(array.length === 1){
+      return [array[0], 0]
+    }
+    let firstTeamWeight = array.map((num, i) => i % 2 === 0 ? num : 0).reduce((acc, cur) => acc + cur, 0)
+    let secondTeamWeight = array.map((num, i) => num = i % 2 !== 0 ? num : 0).reduce((acc, cur) => acc + cur, 0)
+    return [firstTeamWeight, secondTeamWeight]
+  }
+
+  // 113
+  function scrollingText(text){
+    const stringRotations = []
+    for(let i = 0; i < text.length; i++){
+      stringRotations.push((text.slice(i) + text.slice(0, i)).toUpperCase())
+    }
+    return stringRotations
+  }
