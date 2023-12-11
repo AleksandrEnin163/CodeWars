@@ -114,3 +114,66 @@ function positiveSum(arr) {
     }
     return stringRotations
   }
+
+  // 115
+  const arrCheck = value => {
+    for( const elem of value){
+      if(!Array.isArray(elem)){
+        return false
+      }
+    }
+    return true
+  }
+
+  // 117
+  function findMagic(arr){
+    for(let i = 0; i <= arr.length; i++){
+      if(arr[i] === i){
+        return i
+      }
+    }
+    return -1
+  }
+
+  // 118
+  obfuscate = function(email) {
+    return email.split('').map(symbol => {
+      if(symbol === '.'){
+        return symbol = ' [dot] '
+      }else if(symbol === '@'){
+        return symbol = ' [at] '
+      }
+      return symbol
+    }).join('')
+  }
+
+  // 119
+  function checkExam(array1, array2) {
+    let results = 0
+    for(let i = 0; i < array1.length; i++){
+      if(array2[i] === array1[i]){
+        results += 4
+      }else if(array2[i] === ''){
+        results += 0
+      }else{
+        results -= 1
+      }
+    }
+    return results < 0 ? 0 : results
+  }
+
+  // 120
+  function countSmileys(arr) {
+    const smileyRegex = /[:;][-~]?[)D]/
+    return arr.filter(face => face.match(smileyRegex)).length
+  }
+
+  // 121
+  function smallEnough(a, limit){
+    for(const num of a){
+      if(num > limit){
+        return false
+      }
+    }
+    return true
+  }
