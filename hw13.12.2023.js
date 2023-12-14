@@ -36,3 +36,27 @@ function sumArray(array){
     }
     return indexes.length === 0 ? -1 : Math.min(...indexes)
   }
+
+  // 209
+  function indexEqualsValue(a) {
+    for(let i = 0; i < a.length; i++){
+      if(a[i] === i){
+        return i
+      }
+    }
+    return -1
+    
+  //   return a.indexOf(a.find((value, i) => value === i)) 
+  }
+
+  // 215
+  function kebabize(str) {
+    str = str.replaceAll(/\d+/g, '')
+    str = str[0].toLowerCase() + str.slice(1)
+    for(let i = 1; i < str.length; i++){
+      if(str[i] === str[i].toUpperCase()){
+        str = str.slice(0, i) + '-' + str[i].toLowerCase() + str.slice(i + 1);
+      }
+    }
+    return str
+  }
