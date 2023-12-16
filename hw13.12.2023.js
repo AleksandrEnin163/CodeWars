@@ -1,3 +1,13 @@
+// 200
+function rgb(r, g, b) {
+  const rgbArr = [r, g, b]
+  return rgbArr
+    .map(value => value > 255 ? 255 : value)
+    .map(value => value < 0 ? 0 : value)
+    .map(value => [Math.floor(value / 16), (value % 16)].map(num => num.toString(16).toUpperCase()).join(''))
+    .join('')           
+}
+
 // 202
 function getLengthOfMissingArray(arrayOfArrays) {
     if (arrayOfArrays === null || arrayOfArrays.length === 0 || arrayOfArrays.some(arr => arr === null || arr.length === 0)) {
@@ -59,4 +69,27 @@ function sumArray(array){
       }
     }
     return str
+  }
+
+  // 217
+  function isValidIP(str) {
+    const ip = str.split('.')
+    if(ip.length !== 4){
+      return false
+    }
+    for(let i = 0; i < 4; i++){
+      if(isNaN(parseInt(ip[i]))){
+        return false
+      }
+      if(!ip[i].match(/^[0-9]+$/)){
+        return false
+      }
+      if(parseInt(ip[i]) < 0 || parseInt(ip[i]) > 255){
+        return false
+      }
+      if(ip[i].length > 1 && ip[i][0] === '0'){
+        return false
+      }
+    }
+    return true
   }
