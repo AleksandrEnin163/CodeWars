@@ -40,6 +40,18 @@ function proofread (str) {
       .replaceAll('ie', 'ei')
   }
 
+  // 206
+  function deleteDigit(n) {
+    const numbers = n.toString().split('')
+    const newNumbers = []
+    for(let i = 0; i < numbers.length; i++){
+      let numbersCopy = [...numbers]
+      numbersCopy.splice(i, 1)
+      newNumbers.push(parseInt(numbersCopy.join('')))
+    }
+    return Math.max(...newNumbers)
+  }
+
 //   207
 function sumArray(array){
     return array.reduce((acc, curr) => acc + curr, 0)
