@@ -8,6 +8,17 @@ function rgb(r, g, b) {
     .join('')           
 }
 
+// 201
+function twoSum(numbers, target) {
+  for (let i = 0; i < numbers.length - 1; i++) {
+    for (let j = i + 1; j < numbers.length; j++) {
+      if (numbers[i] + numbers[j] === target) {
+        return [i, j];
+      }
+    }
+  }
+}
+
 // 202
 function getLengthOfMissingArray(arrayOfArrays) {
     if (arrayOfArrays === null || arrayOfArrays.length === 0 || arrayOfArrays.some(arr => arr === null || arr.length === 0)) {
