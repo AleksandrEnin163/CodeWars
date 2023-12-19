@@ -92,6 +92,12 @@ function sumArray(array){
   //   return a.indexOf(a.find((value, i) => value === i)) 
   }
 
+  // 214
+  function zeroPlentiful(arr){
+    let zeroGroups = arr.map(String).map(num => num !== '0' ? 1 : num).join('').split(/[^0]/).filter(value => value !== '')
+    return zeroGroups.every(group => group.length >= 4) ? zeroGroups.length : 0
+  }
+
   // 215
   function kebabize(str) {
     str = str.replaceAll(/\d+/g, '')
