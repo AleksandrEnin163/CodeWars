@@ -31,6 +31,16 @@ function getLengthOfMissingArray(arrayOfArrays) {
       .find((value, i, arr) => arr[i + 1] - value > 1) + 1;
   }
 
+  // 203
+  function dataReverse(data) {
+    const bytes = []
+    const size = 8
+    for(let i = 0; i < data.length; i += size){
+      bytes.unshift(data.slice(i, i + size))
+    }
+    return bytes.flat()
+  }
+
 //   204
 function proofread (str) { 
     return str
