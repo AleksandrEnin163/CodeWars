@@ -90,9 +90,9 @@ function sumArray(array){
     return -1
   }
 
-  console.log(findEvenIndex([2, 5, 1, 1])) // 1 ???
-  console.log(findEvenIndex([5, -2, 1, 1])) // 0 ???
-  console.log(findEvenIndex([5, -2, 1])) // -1 ???
+  // console.log(findEvenIndex([2, 5, 1, 1])) // 1 ???
+  // console.log(findEvenIndex([5, -2, 1, 1])) // 0 ???
+  // console.log(findEvenIndex([5, -2, 1])) // -1 ???
 
   // 209
   function indexEqualsValue(a) {
@@ -122,33 +122,29 @@ function sumArray(array){
   // * 7 3
   // 21
 
-  const operators = {
-    "+": (a, b) => a + b,
-    "/": (a, b) => a / b,
-    "-": (a, b) => a - b,
-    "*": (a, b) => a * b,
-  }
+const operators = {
+  "+": (a, b) => a + b,
+  "/": (a, b) => a / b,
+  "-": (a, b) => a - b,
+  "*": (a, b) => a * b,
+};
 
-  function calculate(expression) {
-    const tokens = expression.split(' ')
+function calculate(expression) {
+  const tokens = expression.split(' ');
 
-    for(let i = 0; i < tokens.length; i ++){
-      if(operators.hasOwnProperty(tokens[i]) && !operators.hasOwnProperty(tokens[i + 1]) && !operators.hasOwnProperty(tokens[i + 2])){
+  while (tokens.length > 1) {
+    for (let i = 0; i < tokens.length; i++) {
+      if (operators.hasOwnProperty(tokens[i]) && !operators.hasOwnProperty(tokens[i + 1]) && !operators.hasOwnProperty(tokens[i + 2])) {
         const result = operators[tokens[i]](+tokens[i + 1], +tokens[i + 2]);
-
-        console.log(operators[tokens[i]]);
-        console.log(result);
-        break;
+        tokens.splice(i, 3, result);
       }
     }
-    // for → findIndex
-    // + 3 5 → 8
-    // заменяем эти 3 элемента на 8
-
-    // повторяем в цикле
   }
 
-  calculate('* + 4 / - * 7 + 3 / + 3 5 * 2 2 2 11 3')
+  return tokens[0];
+}
+
+console.log(calculate('* + 4 / - * 7 + 3 / + 3 5 * 2 2 2 11 3'));
 
 
   
