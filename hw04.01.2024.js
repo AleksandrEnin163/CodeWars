@@ -54,3 +54,39 @@ function outed(meet, boss){
     const happinessRate = totalPoints / peopleAmount
     return happinessRate <= 5 ? 'Get Out Now!' : 'Nice Work Champ!'
   }
+
+  // 306
+  function isAnagram(test, original) {
+      test = test.toLowerCase();
+      original = original.toLowerCase()
+      if(test.length !== original.length){
+        return false
+      }
+      let frequencyTest = {}
+      let frequencyOriginal = {}
+      for(let char of test){
+        frequencyTest[char] = (frequencyTest[char] || 0) + 1
+      }
+      for(let char of original){
+        frequencyOriginal[char] = (frequencyOriginal[char] || 0) + 1
+      }
+      for (let char in frequencyTest) {
+        if (frequencyTest[char] !== frequencyOriginal[char]) {
+          return false;
+        }
+      }
+      return true
+  };
+
+  // 307
+  const operators = {
+    "add": (a, b) => a + b,
+    "divide": (a, b) => a / b,
+    "substract": (a, b) => a - b,
+    "multiple": (a, b) => a * b,
+  };
+
+  function arithmetic(a, b, operator){
+    return operators[operator](a, b)
+  }
+    
