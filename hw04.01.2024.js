@@ -55,6 +55,30 @@ function outed(meet, boss){
     return happinessRate <= 5 ? 'Get Out Now!' : 'Nice Work Champ!'
   }
 
+  // 304
+  
+1
+const whosOnline = (friends) => {
+  const online = []
+  const offline = []
+  const away = []
+  for(const user of friends){
+    if(user.status === 'online' && user.lastActivity > 10){
+      away.push(user.username)
+    }else if(user.status === 'offline'){
+      offline.push(user.username)
+    }else{
+      online.push(user.username)
+    }
+  }
+  return {
+    ...(online.length > 0 && { online}),
+    ...(offline.length > 0 && { offline}),
+    ...(away.length > 0 && { away})
+  }
+}
+
+
   // 306
   function isAnagram(test, original) {
       test = test.toLowerCase();
@@ -89,4 +113,34 @@ function outed(meet, boss){
   function arithmetic(a, b, operator){
     return operators[operator](a, b)
   }
+
+  // 308
+  function pluck(objs, name) {
+    return objs.map(obj => obj[name])
+  }
+  
+  // уточнить про обращение через точку или квадратные скобки
+
+  // 309
+  function objConcat(o){
+    const mergedObj = Object.assign(...o)
+    return mergedObj
+  }
+
+  // 311
+  function findUnique(numbers) {
+    let frequencyNum = {}
+    for(let num of numbers){
+      frequencyNum[num] = (frequencyNum[num] || 0) + 1
+    }
+    return +Object.keys(frequencyNum).find(key => frequencyNum[key] === 1)
+}
+
+// 313
+function myLanguages(results) {
+  return Object.entries(results)
+    .filter(language => language[1] >= 60)
+    .sort((a,b) => b[1] - a[1])
+    .map(language => language[0])
+}
     
