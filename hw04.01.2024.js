@@ -167,17 +167,36 @@ console.log(a1);
 
 
 // 310
-function removeDuplicateWords(s) {
-  let frequencyWord = {};
-  const wordsArr = s.split(" ");
+// function removeDuplicateWords(s) {
+//   const wordsArr = s.split(" ");
+//   let frequencyWord = {}
 
-  for (const word of wordsArr) {
-    frequencyWord[word] = (frequencyWord[word] || 0) + 1;
-  }
-  return Object.keys(frequencyWord).join(" ");
+//   for (const word of wordsArr) {
+//     frequencyWord[word] ??= 0;
+//     frequencyWord[word] += 1;
+//   }
+//   return Object.keys(frequencyWord).join(" ");
+// }
+
+function removeDuplicateWords(s) {
+  // const uniqueWords = new Set();
+  // // const resultArr = [];
+
+  // s.split(" ").forEach(word => {
+  //   // if (!uniqueWords.has(word)) {
+  //     uniqueWords.add(word);
+  //     // resultArr.push(word);
+  //   // }
+  // });
+
+  // // return resultArr.join(" ");
+  // return Array.from(uniqueWords).join(" ");
+
+  const uniqueWords = new Set(s.split(" "));
+  return Array.from(uniqueWords).join(" ");
 }
 
-removeDuplicateWords("qwe 3 6 qwe a a 222 3 gtg gtg") // "qwe 3 6 a 2222 gtg"
+console.log(removeDuplicateWords("qwe 3 6 qwe a a 222 3 gtg gtg")) // "qwe 3 6 a 2222 gtg"
 
 // 311
 function findUnique(numbers) { // numbers.length === N
@@ -190,8 +209,78 @@ function findUnique(numbers) { // numbers.length === N
 
 // 313
 function myLanguages(results) {
-  return Object.entries(results)
-    .filter((language) => language[1] >= 60)
-    .sort((a, b) => b[1] - a[1])
-    .map((language) => language[0]);
+  return Object.keys(results)
+    .filter(key => results[key] >= 60)
+    .sort((a, b) => results[a] - results[b])
 }
+
+// 314
+function groupAnagrams(words) {
+    const anagramGroups = {};
+
+    words.forEach(word => {
+      const sortedWord = word.split('').sort().join('');
+      anagramGroups[sortedWord] ??= [];
+      anagramGroups[sortedWord].push(word);
+    });
+
+    return Object.values(anagramGroups);
+  }
+
+  // 315
+  function findPair(arr1, arr2) {
+    // let sumMap = {};
+    // let maxCount = -1;
+    // let maxSumPairs = [];
+    // let maxSum = arr1[0] + arr2[0]
+  
+    // for (let i = 0; i < arr1.length; i++) {
+    //   let currentSum = arr1[i] + arr2[i];
+    //   maxSum = currentSum > maxSum ? currentSum : maxSum
+  
+    //   if (!(currentSum in sumMap)) {
+    //     sumMap[currentSum] = { count: 1, pairs: [[arr1[i], arr2[i]]] };
+    //   } else {
+    //     sumMap[currentSum].count++;
+    //     sumMap[currentSum].pairs.push([arr1[i], arr2[i]]);
+    //   }
+  
+    //   if (sumMap[currentSum].count > maxCount) {
+    //     maxCount = sumMap[currentSum].count;
+    //     maxSumPairs = sumMap[currentSum].pairs;
+    //   } else if (sumMap[currentSum].count === maxCount) {
+    //     maxSumPairs = sumMap[Math.max(...Object.keys(sumMap).filter(key => sumMap[key].count === maxCount))].pairs
+    //   }
+    // }
+  
+    // if (maxCount === 1) {
+    //   return [];
+    // }
+  
+    // return maxSumPairs;
+    
+    // 1. Собрать пары sum → pairs
+    // 2. Найти максималую длину списка пар по какой-то сумме
+    // 3. Найти суммы, соответсующие парам, которых см п.2
+    // 4. Найти максимальную сумму
+    // 5. Вернуть пары по этой сумме
+
+
+    const pairs = arr1.map((_, i) => [arr1[i], arr2[i]])
+    const sum2pairs = Object.groupBy(pairs, pair => pair[0] + pair[1]);
+
+    // const sum2pairs = {}
+    // for(let i = 0; i < arr1.length; i++){
+    //   let sum = arr1[i] + arr2[i]
+    //   sum2pairs[sum] ??= []
+    //   sum2pairs[sum].push([arr1[i], arr2[i]])
+    // }
+
+    const pairsLengths = Objects.values(sum2pairs).map(pairs => pairs.length)
+    const maxLength = Math.max(...pairsLengths)
+    const sums = Objects.keys(sum2pairs)
+    const maxLengthSums = sums.filter(sum => sum2pairs[sum].length === maxLength)
+    const maxSum = Math.max(...maxLengthSums)
+
+    return sum2pairs[maxSum]
+  }
