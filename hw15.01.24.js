@@ -16,12 +16,18 @@ function dbSort(a) {
 function sort(students) {
   return students
     .sort((a, b) => {
-      if (a.gpa !== b.gpa) return b.gpa - a.gpa;
+      if (a.gpa !== b.gpa) {
+        return b.gpa - a.gpa;
+      }
+
       const lastNameA = a.fullName.split(" ")[1][0];
       const lastNameB = b.fullName.split(" ")[1][0];
-      if (a.gpa === b.gpa && lastNameA !== lastNameB)
+
+      if (lastNameA !== lastNameB) {
         return lastNameA.localeCompare(lastNameB);
-      else if (a.gpa === b.gpa && lastNameA === lastNameB) return a.age - b.age;
+      }
+      
+      return a.age - b.age;
     })
     .map((student) => student.fullName)
     .join(",");
@@ -39,21 +45,29 @@ function convertHashToArray(hash) {
 //       .map((num, index) => ({ num, index }))
 //       .filter(val => val.num % 2 !== 0)
 //       .sort((a, b) => a.num - b.num)
-//       .forEach(val => array[val.index] = val.num)
+
+//     console.log(oddNumbers);
+//       // .forEach(val => array[val.index] = val.num)
 
 //     return array
 //   }
-
+//  sortArray([0,3,6,8,9,1])
 // не работает
 
 function sortArray(array) {
   const oddNumbers = array.filter((num) => num % 2 !== 0).sort((a, b) => a - b);
-
-  array.forEach((val, index) => {
-    if (val % 2 !== 0) {
-      array[index] = oddNumbers.shift();
+  for(let i = 0, oddIndex = 0; i < array.length; i++){
+    if(array[i] % 2 !== 0){
+      array[i] = oddNumbers[oddIndex]
+      oddIndex += 1
     }
-  });
+  }
+
+  // array.forEach((val, index) => {
+  //   if (val % 2 !== 0) {
+  //     array[index] = oddNumbers.shift();
+  //   }
+  // });
 
   return array;
 }
@@ -66,8 +80,10 @@ function sortByBit(arr) {
     let bitsA = a.toString(2).replaceAll("0", "").length;
     let bitsB = b.toString(2).replaceAll("0", "").length;
 
-    if (bitsA === bitsB) return a - b;
-    return bitsA - bitsB;
+    if (bitsA !== bitsB) {
+      return bitsA - bitsB;
+    }
+    return a - b;
   });
 }
 
@@ -129,7 +145,8 @@ function alphabetized(s) {
   return s
     .replaceAll(/[^a-zA-Z]/g, '')
     .split('')
-    .sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
+    // .sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
+    .sort((a, b) => a.localeCompare(b, { sensitivity: 'base' }))
     .join('')
 }
 
@@ -140,29 +157,51 @@ function solve(arr){
     frequencyNums[num] = frequencyNums[num] || []
     frequencyNums[num].push(num)
   }
+
+  // const frequencyNums = Object.groupBy(arr, x => x);
+
+  // Object.groupBy(["qwer", "54", "hruhfuir", "ss", "kofw"], x => x.length)
+
+  // {
+  //   "2": ["54",  "ss"],
+  //   "4": ["qwer", "kofw"],
+  //   "8": ["hruhfuir"],
+  // }
   
   const sortedByFrequency = Object.values(frequencyNums).sort((a, b) => b.length - a.length || a[0] - b[0])
-  return [].concat(...sortedByFrequency)
+  // return [].concat(...sortedByFrequency)
+  return sortedByFrequency.flat()
+
+
+  const frequency = {}
+  for(let num of arr){
+    frequencyNums[num] ??= 0;
+    frequencyNums[num] +=1
+  }
+
+  return arr.sort((a, b) => frequency[b] - frequency[a] || a - b);
+
 }
 
 // 406
 
-function sortStringsByVowels(strings){
-  function getLngstVowelSbstr(str){
-    const vowels = 'aeiouAEIOU'
-    let currentLength = 0
-    let maxLength = 0
-    
-    for(let char of str){
-      if(vowels.includes(char)){
-        currentLength++
-      }else{
-        maxLength = Math.max(currentLength, maxLength)
-        currentLength = 0
-      }
+function getLngstVowelSbstr(str){
+  const vowels = 'aeiouAEIOU'
+  let currentLength = 0
+  let maxLength = 0
+  
+  for(let char of str){
+    if(vowels.includes(char)){
+      currentLength++
+    }else{
+      currentLength = 0
     }
-    return Math.max(currentLength, maxLength)
+    maxLength = Math.max(currentLength, maxLength)
   }
+  return maxLength
+}
+
+function sortStringsByVowels(strings){
   return strings.sort((a, b) => {
     const lengthA = getLngstVowelSbstr(a)
     const lengthB = getLngstVowelSbstr(b)
@@ -173,42 +212,63 @@ function sortStringsByVowels(strings){
 
 // 407
 function computeRanks(number, games) {
-  let teams = {}
+  let teams = []
   
-  for(let i = 0; i < number.length; i++){
-    teams[i] = {points: 0, goalsScored: 0, goalsConceded: 0}
+  for(let i = 0; i < number; i++){
+    teams[i] = {id: i, points: 0, goalsScored: 0, GD: 0}
   }
   
-  for(const game of games){
-    teams[game[0]].goalsScored += game[2]
-    teams[game[0]].goalsConceded += game[3]
+  for(const [teamA, teamB, goalA, goalB] of games){
+    teams[teamA].goalsScored += goalA
+    teams[teamA].GD += goalA - goalB
     
-    teams[game[1]].goalsScored += game[3]
-    teams[game[1]].goalsConceded += game[2]  
+    teams[teamB].goalsScored += goalB
+    teams[teamB].GD += goalB - goalA  
     
-    if(game[2] > game[3]){
-      teams[game[0]].points += 2
-    }else if(game[2] < game[3]){
-      teams[game[1]].points += 2
+    if(goalA > goalB){
+      teams[teamA].points += 2
+    }else if(goalA < goalB){
+      teams[teamB].points += 2
     }else{
-      teams[game[0]].points += 1
-      teams[game[1]].points += 1
+      teams[teamA].points += 1
+      teams[teamB].points += 1
     }
   }
   
-    let teamsArray = Object.entries(teams).map(([teamId, stats]) => ({
-    id: parseInt(teamId),
-    ...stats,
-  }));
-  
-    teamsArray.sort((a, b) => {
+  teams.sort((a, b) => {
     if (a.points !== b.points) {
       return b.points - a.points;
-    } else if (a.goalsScored - a.goalsConceded !== b.goalsScored - b.goalsConceded) {
-      return (b.goalsScored - b.goalsConceded) - (a.goalsScored - a.goalsConceded);
-    } else {
-      return b.id - a.id;
     }
+    if (a.GD !== b.GD) {
+      return b.GD - a.GD;
+    }
+    if (a.goalsScored !== b.goalsScored) {
+      return b.goalsScored - a.goalsScored;
+    }
+    return 0
   });
+
   
+  let positions = [];
+  let currentRank = 1;
+
+  for (let i = 0; i < teams.length; i++) {
+    if (i > 0 && teams[i].points === teams[i - 1].points && teams[i].GD === teams[i - 1].GD && teams[i].goalsScored === teams[i - 1].goalsScored) {
+      teams[i].rank = teams[i - 1].rank;
+    } else {
+      teams[i].rank = currentRank;
+      currentRank++;
+    }
+  }
+
+  return teams.sort((a,b) => a.id - b.id).map(team => team.rank)
 }
+console.log(computeRanks(6, [[0, 5, 2, 2],
+[1, 4, 0, 2],   
+[2, 3, 1, 2],   
+[1, 5, 2, 2],   
+[2, 0, 1, 1],   
+[3, 4, 1, 1],  
+[2, 5, 0, 2], 
+[3, 1, 1, 1],
+[4, 0, 2, 0]]))
