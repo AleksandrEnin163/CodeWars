@@ -299,6 +299,28 @@ function memo(fn) {
   }
 }
 
+// String Joining
+// Реализуйте функцию join, которая будет работать следующим образом:
+
+// copy
+// const s = join("Hello")("World!")("how")("are")("you?")();
+// console.log(s); // "Hello World! how are you?"
+// Цепочка может состоять из произвольного количества вызовов.
+
+// Каждый вызов, кроме последнего, принимает в качестве аргумента одну строку. Последний вызов не принимает аргументы и возвращает итоговую строку.
+
+function join(initialStr) {
+  let result = initialStr
+  function innerJoin(nextString) {
+      if (typeof nextString === 'string') {
+          result += ' ' + nextString;
+          return innerJoin;
+      } else {
+          return result;
+      }
+  }
+  return innerJoin;
+}
 
 
 
