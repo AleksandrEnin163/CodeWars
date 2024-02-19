@@ -238,27 +238,32 @@ function fibonacciGenerator() {
 
 // Функция primeGenerator возвращает функцию, которая при очередном вызове возвращает следующее простое число.
 
-function primeGenerator() {
-  function isPrime(num){
-    if(num <= 1 ){
-        return false
-    }
-    let del = 0
-    for(let i = 1; i <= Math.sqrt(num); i++){
-        if(num % i === 0 ){
-            del += 2
-        }
-    }
-    return del === 2
+function isPrime(num){
+  if(num <= 1 ){
+      return false
   }
-  let num = 1
+  let del = 0
+  for(let i = 1; i <= Math.sqrt(num); i++){
+      if(num % i === 0 ){
+          del += 2
+      }
+  }
+  return del === 2
+}
+
+function primeGenerator() {
+  let num = 2
   return function(){
+    const result = num;
+
     while(true){
       num++
       if(isPrime(num)){
-        return num
+        break;
       }
     }
+
+    return result;
   }
 }
 
@@ -289,15 +294,25 @@ console.log(decoratedClick());
 // Ваша задача реализовать функцию-декоратор memo. Эта функция принимает один аргумент fn и возвращает новую функцию, которая делает то же самое, но не вычисляет результат для тех же аргументов повторно.
 
 function memo(fn) {
-  const results = {}
+  const results = new Map()
   return function(arg){
-    if(results[arg]){
-      return results[arg]
+    if(!results.has(arg)){
+      results.set(arg, fn(arg))
     }
-    results[arg] = fn(arg)
-    return results[arg]
+    return results.get(arg)
   }
 }
+
+const identity = x => x;
+
+const memoizedIdentity = memo(identity);
+
+console.log({x: memoizedIdentity(1)})
+console.log({x: memoizedIdentity("1")})
+
+console.log({x: identity(1)})
+console.log({x: identity("1")}); 
+
 
 // String Joining
 // Реализуйте функцию join, которая будет работать следующим образом:
@@ -344,4 +359,69 @@ function plural(words) {
 }
 
 
+function group(arr, isEqual) {
+  const result = []
 
+  for(const elem of arr){
+    const groupFinded = result.find(group => isEqual(group[0], elem));
+
+    if (groupFinded !== undefined){
+      groupFinded.push(elem)
+    } else{
+      result.push([elem])
+    }
+  }
+
+  return result
+}
+
+
+console.log(group(
+  //                                  ↓
+  [
+    "a", "bb", "x", "qwe", "yu", "v", "pp"
+  ],
+  (a, b) => a.length === b.length,
+))
+
+// Полифил Map.groupBy
+// Реализуйте аналог стандартного метода Map.groupBy.
+
+// Функция groupBy принимает iterable и callback, с помощью которого можно понять, к какой группе относится очередной элемент iterable.
+
+// Возвращает объект Map, где по ключам собраны элементы, относящиеся к одной группе.
+
+function groupBy(iterable, cb) {
+  const array = Array.from(iterable)
+  const map = new Map();
+  for (let i = 0; i < array.length; i++) {
+    const key = cb(array[i], i);
+    if (!map.has(key)) {
+      map.set(key, []);
+    }
+    map.get(key).push(array[i]);
+  }
+  return map;
+}
+
+
+
+function groupBy(array, classifier, downstream, accSup) {
+  const map = new Map();
+  for(const elem of array){
+    const key = classifier(elem)
+    const acc = map.has(key) ? map.get(key) : accSup()
+    const updatedAcc = downstream(acc, elem);
+    map.set(key, updatedAcc)
+  }
+  return map
+}
+
+// partial_application
+
+function partial(fn, ...args) {
+  return function(...missingArgs){
+    const allArgs = args.map(arg => arg === undefined ? missingArgs.shift() : arg).concat(missingArgs)
+    return fn(...allArgs)
+  }
+}
