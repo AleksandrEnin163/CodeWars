@@ -1,3 +1,5 @@
+"use strict";
+
 function detectInt(...predicates) {
     let num = 1;
   
@@ -404,6 +406,18 @@ function groupBy(iterable, cb) {
   return map;
 }
 
+function groupBy(iterable, cb) {
+  const map = new Map();
+  for (let i = 0; i < iterable.length; i++) {
+    const key = cb(iterable[i], i);
+    if (!map.has(key)) {
+      map.set(key, []);
+    }
+    map.get(key).push(iterable[i]);
+  }
+  return map;
+}
+
 
 
 function groupBy(array, classifier, downstream, accSup) {
@@ -421,7 +435,62 @@ function groupBy(array, classifier, downstream, accSup) {
 
 function partial(fn, ...args) {
   return function(...missingArgs){
-    const allArgs = args.map(arg => arg === undefined ? missingArgs.shift() : arg).concat(missingArgs)
+    const allArgs = args.map(arg => arg === partial.placeholder ? missingArgs.shift() : arg).concat(missingArgs)
     return fn(...allArgs)
   }
 }
+
+partial.placeholder = Symbol();
+
+const foo1 = (a, b, c) => [a, b, c];
+const foo2 = partial(foo1, "xxx", partial.placeholder, 2);
+
+console.log(foo2(10)); // ["xxx", 10, 2]
+
+function frequency(arr, options = {}) {
+  const {
+    criteria = x => x,
+    compareTo = (val1, val2) => val1 < val2 ? -1 : 1
+  } = options
+  const mapFreqeuncy = new Map()
+  for(const elem of arr){
+    let newElem = criteria(elem)
+
+    if(!mapFreqeuncy.has(newElem)){
+      mapFreqeuncy.set(newElem, 0)
+    }
+    mapFreqeuncy.set(newElem,mapFreqeuncy.get(newElem) + 1)
+  }
+
+  return Array.from(mapFreqeuncy).sort((a, b) => compareTo(a[0], b[0], a[1], b[1]))
+}
+
+function parity(number) {
+  return number % 2 === 0 ? 'even' : 'odd';
+}
+
+console.log(frequency(
+  [1, 2, 3, 4, 5, 6, 7],
+  { criteria: parity },
+));
+// [["even", 3], ["odd", 4]]
+
+
+console.log(frequency(['Peter', 'Anna', 'Rose', 'Peter', 'Peter', 'Anna'], {  }));
+
+console.log(frequency(['Peter', 'Anna', 'Rose', 'Peter', 'Peter', 'Anna']));
+// [["Anna", 2], ["Peter", 3], ["Rose", 1]]
+
+// console.log(frequency([1, 10, 12, 2, 1, 10, 2, 2]));
+// // [[1, 2], [2, 3], [10, 2], [12, 1]]
+
+
+function frequencyCompare(value1, value2, freq1, freq2) {
+  return freq2 - freq1;
+}
+
+console.log(frequency(
+  ['Peter', 'Anna', 'Rose', 'Peter', 'Peter', 'Anna'],
+  { compareTo: frequencyCompare },
+));
+[["Peter", 3], ["Anna", 2], ["Rose", 1]]
