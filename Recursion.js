@@ -308,23 +308,23 @@ console.log(obj2.a); // 1
 //   return result
 // }
 
-const catalog = {
-  id: "1",
-  name: "Электроника",
-  children: [
-    {
-      id: "2",
-      name: "Товары для компьютера",
-      children: [
-        { id: "3", name: "Оперативная память", children: [] },
-        { id: "4", name: "Процессоры", children: [] },
-      ],
-    },
-    { id: "5", name: "Мобильные телефоны", children: [] },
-  ],
-};
+// const catalog = {
+//   id: "1",
+//   name: "Электроника",
+//   children: [
+//     {
+//       id: "2",
+//       name: "Товары для компьютера",
+//       children: [
+//         { id: "3", name: "Оперативная память", children: [] },
+//         { id: "4", name: "Процессоры", children: [] },
+//       ],
+//     },
+//     { id: "5", name: "Мобильные телефоны", children: [] },
+//   ],
+// };
 
-console.log(id2children(catalog));
+// console.log(id2children(catalog));
 
 const expected = {
   "1": ["2", "5"],
@@ -370,3 +370,71 @@ function breadcrumbs(catalog, findId, names = []) {
   }
   return null
 }
+
+function allDescendants(catalog, targetId){
+  const category = findElem(catalog, targetId)
+  return descendants(category)
+}
+
+function findElem(catalog, targetId){
+  const { id, children } = catalog
+  if(targetId === id){
+    return catalog
+  }
+  for(const child of children){
+    const result = findElem(child, targetId)
+    if(result !== null){
+      return result
+    }
+  }
+  return null
+}
+
+function descendants(catalog) {
+  const result = []
+  const { children } = catalog
+  const childIds = children.map(child => child.id)
+  result.push(...childIds)
+  for(const child of children){
+    result.push(...descendants(child))
+  }
+  return result
+}
+
+const catalog = {
+  id: "1",
+  name: "Электроника",
+  children: [
+    {
+      id: "2",
+      name: "Товары для компьютера",
+      children: [
+        { id: "3", name: "Оперативная память", children: [] },
+        { id: "4", name: "Процессоры", children: [] },
+      ],
+    },
+    { id: "5", name: "Мобильные телефоны", children: [] },
+  ],
+};
+
+console.log(allDescendants(catalog, '3'))
+// ["2", "3", "4", "5"]
+
+function countChange(money, coins) {
+  
+}
+
+// [2, 3, 5, 7, 11]
+// 100
+
+
+// countChange(100, [2, 3, 5, 7, 11])
+countChange(100, [3,5,7,11]) + countChange(98, [2, 3, 5, 7, 11])
+
+// countChange(10, [2, 3, 5, 7, 11])
+countChange(10, [3,5,7,11]) + countChange(8, [2, 3, 5, 7, 11])
+//            3+7 5+5                       2+2+2+2 2+3+3 3+5
+
+
+// https://www.codewars.com/kata/5a942c461a60f677730032df/train/javascript
+// https://www.codewars.com/kata/determine-sizeof-c-datatype-beginner-no-prior-c-knowledge-required/train/javascript
