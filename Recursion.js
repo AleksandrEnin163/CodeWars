@@ -420,8 +420,15 @@ const catalog = {
 console.log(allDescendants(catalog, '3'))
 // ["2", "3", "4", "5"]
 
-function countChange(money, coins) {
-  
+function countChange(amount, coins) {
+  if(amount === 0){
+    return 1
+  }
+  if(amount < 0 || coins.length === 0){
+    return 0
+  }
+  const [first, ...rest] = coins
+  return countChange(amount - first, coins) + countChange(amount, rest)
 }
 
 // [2, 3, 5, 7, 11]
@@ -429,10 +436,10 @@ function countChange(money, coins) {
 
 
 // countChange(100, [2, 3, 5, 7, 11])
-countChange(100, [3,5,7,11]) + countChange(98, [2, 3, 5, 7, 11])
+// countChange(100, [3,5,7,11]) + countChange(98, [2, 3, 5, 7, 11])
 
 // countChange(10, [2, 3, 5, 7, 11])
-countChange(10, [3,5,7,11]) + countChange(8, [2, 3, 5, 7, 11])
+// countChange(10, [3,5,7,11]) + countChange(8, [2, 3, 5, 7, 11])
 //            3+7 5+5                       2+2+2+2 2+3+3 3+5
 
 
