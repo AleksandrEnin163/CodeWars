@@ -420,6 +420,19 @@ const catalog = {
 console.log(allDescendants(catalog, '3'))
 // ["2", "3", "4", "5"]
 
+function a(x, y) {
+  return b(x) + c(y)
+}
+
+
+function b(m) {
+  return 1 + c(m * 2)
+}
+
+function c(t) {
+  return t ** 2;
+}
+
 function countChange(amount, coins) {
   if(amount === 0){
     return 1
@@ -428,8 +441,27 @@ function countChange(amount, coins) {
     return 0
   }
   const [first, ...rest] = coins
-  return countChange(amount - first, coins) + countChange(amount, rest)
+  const r1 = countChange(amount - first, coins);
+  const r2 = countChange(amount, rest)
+  return r1 + r2;
 }
+
+function countChangeList(money, coins, usedCoins = []) {
+  if(money === 0){
+    return [usedCoins.join('+')]
+  }
+  if(money < 0 || coins.length === 0){
+    return []
+  }
+  const [first, ...rest] = coins
+  const r1 = countChangeList(money - first, coins, [...usedCoins, first] )
+  const r2 = countChangeList(money, rest, usedCoins)
+  return [...r1, ...r2]
+}
+
+console.log(countChangeList(4, [1, 2]));
+
+//что возвращает countChange, если у нас только при amount 0 или меньше 0 мы возвращаем 1 или 0, где у нас сохранятеся количество способов.
 
 // [2, 3, 5, 7, 11]
 // 100
@@ -445,3 +477,310 @@ function countChange(amount, coins) {
 
 // https://www.codewars.com/kata/5a942c461a60f677730032df/train/javascript
 // https://www.codewars.com/kata/determine-sizeof-c-datatype-beginner-no-prior-c-knowledge-required/train/javascript
+
+function sizeof(type) {
+  const types = {
+  char: 1,
+  short: 2,
+  int: 2,
+  long: 4,
+  'long long': 8,
+  'unsigned char': 1,
+  'unsigned short': 2,
+  'unsigned int': 2,
+  'unsigned long': 4,
+  'unsigned long long': 8,
+  float: 4,
+  double: 8
+}
+if(typeof type === 'string'){
+  return types[type]
+}
+// if(type.members.length === 0){
+//   return 0
+// }
+if(type.type === 'union'){
+  return Math.max(0, ...type.members.map(member => sizeof(member)))
+} else {
+  return type.members.reduce((acc, member) => acc + sizeof(member), 0)
+}
+}
+
+// sizeof("int") === 2
+
+// console.log(sizeof({
+//   type: "struct",
+//   members: ["char", "int"],
+// })) === 3
+
+console.log(sizeof({
+  type: "struct",
+  members: [
+    "int",
+    "int",
+    "float",
+    {
+      type: "union",
+      members: []
+    }
+  ]
+})) === 8
+
+function flattenObj(obj, path = []) {
+  const result = {};
+  for (const key in obj) {
+    const value = obj[key];
+    if (typeof value === "object" && value !== null) {
+      Object.assign(result, flattenObj(value, [...path, key]));
+    } else {
+      result[[...path, key].join('/')] = value;
+    }
+  }
+  return result;
+}
+
+const obj1 = {
+  m: {
+    o: {
+      w: 4n,
+      g: true,
+    },
+    f: 571,
+  },
+};
+
+console.log(flattenObj(obj1))
+
+// flattenObj(obj) === {
+//   "m/o/w": 4n,
+//   "m/o/g": true,
+//   "m/f": 571,
+// };
+
+
+function combos(num, min = 1) {
+  if(num === 0){
+    return [[]]
+  }
+  const result = []
+  for(let i = min; i <= num; i++){
+    // i === 1
+    const prevArr = combos(num - i, i)
+    const newArr = prevArr.map(arr => [i, ...arr]) //
+    // result.push(...newArr)
+    for(const x of newArr) {
+      result.push(x)
+
+    }
+    //         [ [1,1,1], [1,2], [2,1], [3] ]
+    //                          ↓
+    // arr === [ [1,1,1,1], [1,1,2], [1,2,1], [1,3] ]
+  }
+  return result
+}
+
+// combos(4) === ???
+// 1+1+1+1, 1+1+2, ... 2+1+1, 2+2, 3+1, 4
+// --------------      ----------  ---  -
+
+// 4 = 1+.......       2+
+
+// [ [1,1,1,1], [1,1,2], [1,2,1], [1,3] ];  ← combos(3)
+// [ [2,1,1], [2,2] ];  ← combos(2)
+// [ [3,1] ];  ← combos(1)
+// [ [4] ];  ← combos(0)
+
+// 4 = 2 + ...
+
+// combos(2) === [ [1,1], [2] ]  →  [ [2,1,1], [2,2] ]
+// combos(0) ===  [ [] ]  → [ [4] ]
+
+// combos(1) === [ [1] ];
+// combos(2) === [ [1,1], [2] ];
+// combos(3) === [ [1,1,1], [1,2], [2,1], [3] ];
+
+// console.log(combos(20))
+console.log(combos(20).length)
+
+
+// 10 512
+// 15 16384
+// 20 524288 627
+
+// D F S  →  depth first search
+
+const grid = [
+  [0,0,0,0,0,0,0,1,0,0],
+  [0,0,1,1,0,0,1,0,0,0],
+  [0,0,1,1,1,1,0,0,0,0],
+  [0,1,0,0,0,1,0,0,1,0],
+  [0,0,0,0,0,1,1,1,0,0],
+  [1,1,0,0,0,1,0,0,0,0],
+];
+
+// grid[y][x]
+
+
+function dfs(grid, y, x){
+  if(y < 0 || y > grid.length - 1 || x < 0 || x > grid[0].length - 1){
+    return
+  }
+  if(grid[y][x] === 0){
+    return
+  }
+  if(grid[y][x] === 2){
+    return
+  }
+  grid[y][x] = 2
+
+  // console.log({x, y});
+
+  dfs(grid, y - 1, x - 1)
+  dfs(grid, y - 1, x)
+  dfs(grid, y - 1, x + 1)
+  dfs(grid, y, x - 1)
+  dfs(grid, y, x + 1)
+  dfs(grid, y + 1, x - 1)
+  dfs(grid, y + 1, x)
+  dfs(grid, y + 1, x + 1)
+}
+
+function countIslands(grid){
+  let count = 0
+  for(let y = 0; y < grid.length; y++){
+    for(let x = 0; x < grid[y].length; x++){
+      if(grid[y][x] === 1){
+        count += 1
+        dfs(grid, y, x)
+      }
+    }
+  }
+  return count
+}
+
+// console.log(countIslands(grid)); // 2
+
+
+
+
+function dfsWords(board, y, x, word){
+  const directions = [[-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1]]
+  console.log(board);
+  if(word.length === 0){
+    return true
+  }
+  if(y < 0 || y > board.length - 1 || x < 0 || x > board[0].length - 1){
+    return false
+  }
+  if(typeof board[y][x] === 'number'){
+    return false
+  }
+  if(board[y][x] !== word[0]){
+    return false
+  }
+  let letter = board[y][x]
+  board[y][x] = 1
+  // if(dfsWords(board, y - 1, x - 1, word.slice(1)) ||
+  // dfsWords(board, y - 1, x, word.slice(1))
+  // || dfsWords(board, y - 1, x + 1, word.slice(1))
+  // || dfsWords(board, y, x - 1, word.slice(1))
+  // ||dfsWords(board, y, x + 1, word.slice(1))
+  // || dfsWords(board, y + 1, x - 1, word.slice(1))
+  // || dfsWords(board, y + 1, x, word.slice(1))
+  // || dfsWords(board, y + 1, x + 1, word.slice(1))){
+  //   board[y][x] = letter
+  //   return true
+  // for(const [dy, dx] of directions){
+  //   if(dfsWords(board, y + dy, x + dx, word.slice(1))){
+  //     board[y][x] = letter
+  //     return true
+  //   }
+  // }
+  // board[y][x] = letter
+  // return false
+
+
+  const result = directions.some(([dy, dx]) => dfsWords(board, y + dy, x + dx, word.slice(1)))
+  board[y][x] = letter
+  return result
+}
+
+function checkWord(board, word) {
+  for(let y = 0; y < board.length; y++){
+    for(let x = 0; x < board[y].length; x++){
+      if(dfsWords(board, y, x, word)) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+const board = [ 
+  ["I","L","A","W"],
+  ["B","N","G","E"],
+  ["I","U","A","O"],
+  ["A","S","R","L"],
+];
+
+console.log(dfsWords(
+  board,
+  1,
+  0,
+  "BIUNLA",
+)) // true
+
+console.log(board);
+
+
+// можно ли в матрице board найти слово word
+// если первая буква этого слова находиться в board[y][x]
+
+// true или false
+
+
+function dfsMax(grid, y, x){
+  if(y < 0 || y > grid.length - 1 || x < 0 || x > grid[0].length - 1){
+    return 0
+  }
+  if(grid[y][x] === 0){
+    return 0
+  }
+  if(grid[y][x] === 2){
+    return 0
+  }
+  grid[y][x] = 2
+
+  return 1 + dfsMax(grid, y - 1, x - 1) +
+  dfsMax(grid, y - 1, x) +
+  dfsMax(grid, y - 1, x + 1) +
+  dfsMax(grid, y, x - 1) +
+  dfsMax(grid, y, x + 1) +
+  dfsMax(grid, y + 1, x - 1) +
+  dfsMax(grid, y + 1, x) +
+  dfsMax(grid, y + 1, x + 1)
+}
+
+function maxArea(grid){
+  let areaMax = 0
+  for(let y = 0; y < grid.length; y++){
+    for(let x = 0; x < grid[y].length; x++){
+      if(grid[y][x] === 1){
+        let newArea = dfsMax(grid, y, x)
+        areaMax = Math.max(newArea, areaMax)
+      }
+    }
+  }
+  return areaMax
+}
+
+const grid1 = [
+  [0,0,0,0,0,0,0,0,0,0],
+  [0,0,1,1,0,0,0,0,0,0],
+  [0,0,1,1,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0,0,1,0],
+  [0,0,0,0,0,1,1,1,0,0],
+  [1,1,0,0,0,0,0,0,0,0],
+];
+
+// console.log(maxArea(grid1)); // 4
